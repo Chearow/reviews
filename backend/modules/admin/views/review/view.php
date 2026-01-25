@@ -33,7 +33,15 @@ $this->params['breadcrumbs'][] = $this->title;
             'title',
             'text',
             'rating',
-            'img',
+            [
+                'attribute' => 'img',
+                'format' => 'raw',
+                'value' => function ($model) {
+                    return $model->img
+                        ? Html::img(Yii::getAlias('@frontendUrl') . $model->img, ['style' => 'max-width:200px'])
+                        : '(no image)';
+                },
+            ],
             'author_id',
             'is_for_all',
             'created_at',

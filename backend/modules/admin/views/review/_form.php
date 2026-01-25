@@ -10,19 +10,27 @@ use yii\widgets\ActiveForm;
 
 <div class="review-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'text')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'text')->textarea(['rows' => 5]) ?>
 
     <?= $form->field($model, 'rating')->textInput() ?>
-
-    <?= $form->field($model, 'img')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'author_id')->textInput() ?>
 
     <?= $form->field($model, 'is_for_all')->textInput() ?>
+
+    <?= $form->field($model, 'city_ids')->checkboxList(
+        \yii\helpers\ArrayHelper::map(
+            \common\models\City::find()->all(),
+            'id',
+            'name'
+        )
+    ) ?>
+
+    <?= $form->field($model, 'imageFile')->fileInput() ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

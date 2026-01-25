@@ -23,6 +23,8 @@ use yii\behaviors\TimestampBehavior;
  */
 class Review extends \yii\db\ActiveRecord
 {
+    public $imageFile;
+    public $city_ids = [];
     public static function tableName()
     {
         return 'review';
@@ -48,6 +50,8 @@ class Review extends \yii\db\ActiveRecord
             [['title'], 'string', 'max' => 100],
             [['text', 'img'], 'string', 'max' => 255],
             [['author_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['author_id' => 'id']],
+            ['city_ids', 'each', 'rule' => ['integer']],
+            ['imageFile', 'file', 'extensions' => 'png, jpg, jpeg', 'skipOnEmpty' => true],
         ];
     }
 
@@ -78,5 +82,43 @@ class Review extends \yii\db\ActiveRecord
     public function getUser()
     {
         return $this->hasOne(User::class, ['id' => 'author_id']);
+    }
+
+    public function uploadImage()
+    {
+        if ($this->imageFile) {
+            if ($this->img) {
+                $oldPath = Yii::getAlias('@frontend/web') . $this->img;
+                if (file_exists($oldPath)) {
+                    unlink($oldPath);
+                }
+            }
+
+            $fileName = uniqid('review_') . '.' . $this->imageFile->extension;
+            $path = Yii::getAlias('@frontend/web/uploads/reviews/') . $fileName;
+
+            if ($this->imageFile->saveAs($path)) {
+                $this->img = '/uploads/reviews/' . $fileName;
+                return true;
+            }
+            return false;
+        }
+        return true;
+    }
+
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+
+        ReviewCity::deleteAll(['review_id' => $this->id]);
+
+        if(is_array($this->city_ids)) {
+            foreach ($this->city_ids as $city_id) {
+                $rc = new ReviewCity();
+                $rc->review_id = $this->id;
+                $rc->city_id = $city_id;
+                $rc->save(false);
+            }
+        }
     }
 }
