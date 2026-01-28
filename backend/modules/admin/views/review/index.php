@@ -34,11 +34,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'text',
             'rating',
             'img',
-            //'author_id',
+            'author_id',
             //'is_for_all',
             //'created_at',
             [
-                'class' => ActionColumn::className(),
+                'class' => ActionColumn::class,
                 'urlCreator' => function ($action, Review $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                  }

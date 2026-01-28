@@ -30,15 +30,12 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'auth_key',
-            'password_hash',
             'email:email',
-            'created_at',
-            'verification_token',
             'fio',
             'phone',
-            'email_confirm_token:email',
-            'is_email_confirmed:email',
+            'created_at:datetime',
+            'email_confirm_token',
+            'is_email_confirmed:boolean',
         ],
     ]) ?>
 

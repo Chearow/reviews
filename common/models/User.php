@@ -46,12 +46,15 @@ class User extends ActiveRecord implements IdentityInterface
             [['fio', 'email', 'phone'], 'required'],
             [['fio'], 'string', 'max' => 255],
             [['phone'], 'string', 'max' => 50],
-            [['email_confirm_token'], 'string', 'max' => 255],
+            ['email', 'string', 'max' => 255],
             [['email'], 'email'],
             [['email'], 'unique'],
+            ['phone', 'unique'],
+            [['email_confirm_token'], 'string', 'max' => 255],
             ['is_email_confirmed', 'boolean'],
             ['password', 'required', 'on' => 'create'],
             ['password', 'string', 'min' => 6],
+            ['password', 'safe', 'on' => 'update'],
         ];
     }
 
