@@ -11,38 +11,41 @@ use common\models\User;
  */
 class SignupForm extends Model
 {
-    public $username;
+    public $fio;
     public $email;
+    public $phone;
     public $password;
+    public $password_repeat;
+    public $verifyCode;
 
-
-    /**
-     * {@inheritdoc}
-     */
     public function rules()
     {
         return [
-            ['username', 'trim'],
-            ['username', 'required'],
-            ['username', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This username has already been taken.'],
-            ['username', 'string', 'min' => 2, 'max' => 255],
-
-            ['email', 'trim'],
-            ['email', 'required'],
+            [['fio', 'email', 'phone', 'password', 'password_repeat', 'verifyCode'], 'required'],
+            ['fio', 'string', 'max' => 255],
+            ['phone', 'string', 'max' => 50],
             ['email', 'email'],
             ['email', 'string', 'max' => 255],
-            ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This email address has already been taken.'],
-
-            ['password', 'required'],
-            ['password', 'string', 'min' => Yii::$app->params['user.passwordMinLength']],
+            ['email', 'unique', 'targetClass' => User::class, 'message' => 'Этот email уже зарегистрирован'],
+            ['password', 'string', 'min' => 6],
+            ['password_repeat', 'compare', 'compareAttribute' => 'password', 'message' => 'Пароли должны совпадать.'],
+            ['verifyCode', 'captcha', 'captchaAction' => '/site/captcha'],
         ];
     }
 
-    /**
-     * Signs user up.
-     *
-     * @return bool whether the creating new account was successful and email was sent
-     */
+    public function attributeLabels()
+    {
+        return [
+            'fio' => 'ФИО',
+            'email' => 'Email',
+            'phone' => 'Номер телефона',
+            'password' => 'Пароль',
+            'password_repeat' => 'Повтор пароля',
+            'verifyCode' => 'Код с картинки'
+        ];
+    }
+
+
     public function signup()
     {
         if (!$this->validate()) {
@@ -50,28 +53,23 @@ class SignupForm extends Model
         }
 
         $user = new User();
-        $user->username = $this->username;
+        $user->fio = $this->fio;
         $user->email = $this->email;
-        $user->setPassword($this->password);
-        $user->generateAuthKey();
-        $user->generateEmailVerificationToken();
+        $user->phone = $this->phone;
+        $user->password = $this->password;
+        $user->generateEmailConfirmToken();
 
-        return $user->save() && $this->sendEmail($user);
+        if ($user->save()) {
+            $this->sendEmail($user);
+            return true;
+        }
+        return false;
     }
 
-    /**
-     * Sends confirmation email to user
-     * @param User $user user model to with email should be send
-     * @return bool whether the email was sent
-     */
     protected function sendEmail($user)
     {
-        return Yii::$app
-            ->mailer
-            ->compose(
-                ['html' => 'emailVerify-html', 'text' => 'emailVerify-text'],
-                ['user' => $user]
-            )
+        return Yii::$app->mailer
+            ->compose('emailVerify-html', ['user' => $user])
             ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name . ' robot'])
             ->setTo($this->email)
             ->setSubject('Account registration at ' . Yii::$app->name)

@@ -40,6 +40,7 @@ return [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+            'hostInfo' => 'http://reviews',
             'rules' => [
                 '<action:(about|contact|login|signup)>' => 'site/<action>',
                 '<controller:\w+>/<id:\d+>' => '<controller>/view',

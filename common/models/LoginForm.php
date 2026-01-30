@@ -35,10 +35,16 @@ class LoginForm extends Model
     public function validatePassword($attribute, $params)
     {
         if (!$this->hasErrors()) {
-            $user = $this->getUser();
-            if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, 'Неверный email или пароль.');
-            }
+            return;
+        }
+        $user = $this->getUser();
+        if (!$user || !$user->validatePassword($this->password)) {
+            $this->addError($attribute, 'Неверный email или пароль');
+            return;
+        }
+        if (!$user->is_email_confirmed) {
+            $this->addError($attribute, 'Email не подтверждён. Проверьте почту.');
+            return;
         }
     }
 

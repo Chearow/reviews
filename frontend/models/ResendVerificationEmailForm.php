@@ -13,39 +13,35 @@ class ResendVerificationEmailForm extends Model
      */
     public $email;
 
-
-    /**
-     * {@inheritdoc}
-     */
     public function rules()
     {
         return [
             ['email', 'trim'],
             ['email', 'required'],
             ['email', 'email'],
-            ['email', 'exist',
-                'targetClass' => '\common\models\User',
-                'filter' => ['status' => User::STATUS_INACTIVE],
-                'message' => 'There is no user with this email address.'
+            [
+                'email',
+                'exist',
+                'targetClass' => User::class,
+                'filter' => ['is_email_confirmed' => false],
+                'message' => 'Пользователь с таким email не найден.'
             ],
         ];
     }
 
-    /**
-     * Sends confirmation email to user
-     *
-     * @return bool whether the email was sent
-     */
     public function sendEmail()
     {
         $user = User::findOne([
             'email' => $this->email,
-            'status' => User::STATUS_INACTIVE
+            'is_email_confirmed' => false,
         ]);
 
-        if ($user === null) {
+        if (!$user) {
             return false;
         }
+
+        $user->generateEmailConfirmToken();
+        $user->save(false);
 
         return Yii::$app
             ->mailer
