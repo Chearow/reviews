@@ -46,6 +46,7 @@ class Review extends \yii\db\ActiveRecord
         return [
             [['title', 'text', 'rating', 'author_id'], 'required'],
             [['rating', 'author_id'], 'integer'],
+            ['rating', 'integer', 'min' => 1, 'max' => 5],
             ['is_for_all', 'boolean'],
             [['title'], 'string', 'max' => 100],
             [['text', 'img'], 'string', 'max' => 255],

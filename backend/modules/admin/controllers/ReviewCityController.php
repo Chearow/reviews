@@ -31,11 +31,6 @@ class ReviewCityController extends Controller
         );
     }
 
-    /**
-     * Lists all ReviewCity models.
-     *
-     * @return string
-     */
     public function actionIndex()
     {
         $searchModel = new ReviewCitySearch();
@@ -47,13 +42,6 @@ class ReviewCityController extends Controller
         ]);
     }
 
-    /**
-     * Displays a single ReviewCity model.
-     * @param int $review_id Review ID
-     * @param int $city_id City ID
-     * @return string
-     * @throws NotFoundHttpException if the model cannot be found
-     */
     public function actionView($review_id, $city_id)
     {
         return $this->render('view', [
@@ -61,11 +49,6 @@ class ReviewCityController extends Controller
         ]);
     }
 
-    /**
-     * Creates a new ReviewCity model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return string|\yii\web\Response
-     */
     public function actionCreate()
     {
         $model = new ReviewCity();
@@ -83,14 +66,6 @@ class ReviewCityController extends Controller
         ]);
     }
 
-    /**
-     * Updates an existing ReviewCity model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param int $review_id Review ID
-     * @param int $city_id City ID
-     * @return string|\yii\web\Response
-     * @throws NotFoundHttpException if the model cannot be found
-     */
     public function actionUpdate($review_id, $city_id)
     {
         $model = $this->findModel($review_id, $city_id);
@@ -104,14 +79,6 @@ class ReviewCityController extends Controller
         ]);
     }
 
-    /**
-     * Deletes an existing ReviewCity model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param int $review_id Review ID
-     * @param int $city_id City ID
-     * @return \yii\web\Response
-     * @throws NotFoundHttpException if the model cannot be found
-     */
     public function actionDelete($review_id, $city_id)
     {
         $this->findModel($review_id, $city_id)->delete();
@@ -119,14 +86,6 @@ class ReviewCityController extends Controller
         return $this->redirect(['index']);
     }
 
-    /**
-     * Finds the ReviewCity model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param int $review_id Review ID
-     * @param int $city_id City ID
-     * @return ReviewCity the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
     protected function findModel($review_id, $city_id)
     {
         if (($model = ReviewCity::findOne(['review_id' => $review_id, 'city_id' => $city_id])) !== null) {
