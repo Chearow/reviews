@@ -277,7 +277,7 @@ class SiteController extends Controller
         return $city;
     }
 
-    Public function actionAuthorInfo($id)
+    public function actionAuthorInfo($id)
     {
         Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         $user = \common\models\User::findOne($id);
@@ -297,5 +297,23 @@ class SiteController extends Controller
                 'reviewsUrl' => \yii\helpers\Url::to(['site/author-reviews', 'id' => $user->id]),
             ],
         ];
+    }
+
+    public function actionAuthorReviews($id)
+    {
+        $user = \common\models\User::findOne($id);
+        if (!$user) {
+            throw new \yii\web\NotFoundHttpException('Автор не найден');
+        }
+
+        $reviews = \common\models\Review::find()
+            ->where(['author_id' => $id])
+            ->orderBy(['created_at' => SORT_DESC])
+            ->all();
+
+        return $this->render('author-reviews', [
+            'user' => $user,
+            'reviews' => $reviews,
+        ]);
     }
 }
