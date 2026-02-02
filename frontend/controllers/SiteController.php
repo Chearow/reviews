@@ -65,10 +65,15 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
+        if(Yii::$app->request->url === '/site/index' || Yii::$app->request->url === '/index') {
+            return $this->redirect(['/'], );
+        }
+
         if (Yii::$app->request->get('forceList')) {
             $cities = \common\models\City::find()->orderBy(['name' => SORT_ASC])->all();
             return $this->render('choose-city-list', ['cities' => $cities]);
         }
+
         $session = Yii::$app->session;
         if($session->has('city_id')) {
             $cityId = $session->get('city_id');
@@ -80,12 +85,14 @@ class SiteController extends Controller
                 ->all();
             return $this->render('index', ['reviews' => $reviews]);
         }
+
         $ipCity = $this->detectCityByIP();
         if ($ipCity) {
             return $this->render('choose-city', [
                 'city' => $ipCity,
             ]);
         }
+
         $cities = \common\models\City::find()->orderBy(['name' => SORT_ASC])->all();
         return $this->render('choose-city-list', [
             'cities' => $cities,
@@ -268,5 +275,27 @@ class SiteController extends Controller
         $city->save(false);
 
         return $city;
+    }
+
+    Public function actionAuthorInfo($id)
+    {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $user = \common\models\User::findOne($id);
+        if (!$user) {
+            return [
+                'success' => false,
+                'message' => 'Пользователь не найден',
+            ];
+        }
+
+        return [
+            'success' => true,
+            'data' => [
+                'fio' => $user->fio,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'reviewsUrl' => \yii\helpers\Url::to(['site/author-reviews', 'id' => $user->id]),
+            ],
+        ];
     }
 }
