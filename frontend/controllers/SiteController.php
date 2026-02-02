@@ -65,7 +65,38 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
-        return $this->render('index');
+        if (Yii::$app->request->get('forceList')) {
+            $cities = \common\models\City::find()->orderBy(['name' => SORT_ASC])->all();
+            return $this->render('choose-city-list', ['cities' => $cities]);
+        }
+        $session = Yii::$app->session;
+        if($session->has('city_id')) {
+            $cityId = $session->get('city_id');
+            return $this->render('index', [
+                'cityId' => $cityId,
+            ]);
+        }
+        $ipCity = $this->detectCityByIP();
+        if ($ipCity) {
+            return $this->render('choose-city', [
+                'city' => $ipCity,
+            ]);
+        }
+        $cities = \common\models\City::find()->orderBy(['name' => SORT_ASC])->all();
+        return $this->render('choose-city-list', [
+            'cities' => $cities,
+        ]);
+    }
+
+    public function actionSetCity($id)
+    {
+        $city = \common\models\City::findOne($id);
+        if ($city) {
+            Yii::$app->session->set('city_id', $city->id);
+            return $this->redirect(['site/index']);
+        }
+
+        throw new \yii\web\NotFoundHttpException('Город не найден');
     }
 
     public function actionLogin()
@@ -196,5 +227,42 @@ class SiteController extends Controller
         return $this->render('resendVerificationEmail', [
             'model' => $model
         ]);
+    }
+
+    private function detectCityByIP()
+    {
+        $ip = Yii::$app->request->userIP;
+        if ($ip === '127.0.0.1' || $ip === '::1') {
+            return null;
+        }
+
+        $url = "http://ip-api.com/json/{$ip}?lang=ru";
+
+        $response = @file_get_contents($url);
+        if (!$response) {
+            return null;
+        }
+
+        $data = json_decode($response, true);
+        if (!isset($data['status']) || $data['status'] !== 'success') {
+            return null;
+        }
+
+        $cityName = $data['city'] ?? null;
+        if (!$cityName) {
+            return null;
+        }
+
+        $city = \common\models\City::findOne(['name' => $cityName]);
+        if ($city) {
+            return $city;
+        }
+
+        $city = new \common\models\City();
+        $city->name = $cityName;
+        $city->created_at = time();
+        $city->save(false);
+
+        return $city;
     }
 }
