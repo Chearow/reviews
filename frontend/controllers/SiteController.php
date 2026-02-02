@@ -72,9 +72,13 @@ class SiteController extends Controller
         $session = Yii::$app->session;
         if($session->has('city_id')) {
             $cityId = $session->get('city_id');
-            return $this->render('index', [
-                'cityId' => $cityId,
-            ]);
+            $reviews = \common\models\Review::find()
+                ->joinWith('cities')
+                ->where(['city.id' => $cityId])
+                ->orWhere(['review.is_for_all' => 1])
+                ->orderBy(['review.created_at' => SORT_DESC])
+                ->all();
+            return $this->render('index', ['reviews' => $reviews]);
         }
         $ipCity = $this->detectCityByIP();
         if ($ipCity) {
