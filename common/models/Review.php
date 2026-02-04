@@ -100,6 +100,7 @@ class Review extends \yii\db\ActiveRecord
 
             if ($this->imageFile->saveAs($path)) {
                 $this->img = '/uploads/reviews/' . $fileName;
+                $this->save(false);
                 return true;
             }
             return false;

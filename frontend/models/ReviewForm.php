@@ -43,6 +43,8 @@ class ReviewForm extends Model
             return false;
         }
 
+        $this->imageFile = \yii\web\UploadedFile::getInstance($this, 'imageFile');
+
         $review = new Review();
         $review->title = $this->title;
         $review->text = $this->text;
