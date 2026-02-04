@@ -31,15 +31,28 @@ $this->title = 'Создать отзыв';
 ]) ?>
 
 <?= $form->field($model, 'city_ids')->widget(Select2::class, [
-    'options' => ['placeholder' => 'Выберите города...', 'multiple' => true,
+    'options' => [
+        'placeholder' => 'Выберите города...',
+        'multiple' => true,
+        'id' => 'city-select'
     ],
     'pluginOptions' => [
         'allowClear' => true,
         'minimumInputLength' => 2,
+        'language' => [
+            'noResults' => new \yii\web\JsExpression("
+                function() {
+                    return '<button type=\"button\" class=\"btn btn-link p-0\" id=\"add-city-btn\">Добавить город</button>';
+                }
+            "),
+        ],
+        'escapeMarkup' => new \yii\web\JsExpression('function (markup) {return markup; }'),
         'ajax' => [
             'url' =>'/city/search',
             'dataType' => 'json',
-            'data' => new \yii\web\JsExpression('function(params) { return {q:params.term}; }')
+            'delay' => 250,
+            'data' => new \yii\web\JsExpression('function(params) { return {q:params.term}; }'),
+            'processResults' => new \yii\web\JsExpression('function(data) {return {results: data};}')
         ],
     ],
 ]) ?>
@@ -55,6 +68,30 @@ $this->title = 'Создать отзыв';
 
 <?php
 $js = <<<JS
+$(document).on('click', '#add-city-btn', function() {
+    let query = $('.select2-search__field').val();
+    
+    if(!query) {
+        alert('Введите название города');
+        return;
+    }
+    
+    $.ajax({
+        url: '/city/create-ajax',
+        type: 'POST',
+        data: {query: query},
+        success: function(response) {
+            if (response.success) {
+                let newOption = new Option(response.text, response.id, true, true);
+                $('.select2-search__field').val('');
+                $('#city-select').append(newOption).trigger('change');
+            } else {
+                alert(response.message || 'Ошибка при создании города');
+            }
+        }
+    });
+});
+
 $('#save-review').on('click', function () {
     let formData = new FormData($('#review-form')[0]);
     
