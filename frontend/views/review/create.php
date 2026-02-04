@@ -15,17 +15,23 @@ $this->title = 'Создать отзыв';
 
 <?php $form = ActiveForm::begin([
         'id' => 'review-form',
+        'enableClientValidation' => false,
+        'enableAjaxValidation' => false,
         'options' => ['enctype' => 'multipart/form-data'],
 ]); ?>
 
 <?= $form->field($model, 'title') ?>
 <?= $form->field($model, 'text')->textarea() ?>
-<?= $form->field($model, 'rating')->dropDownList([1,2,3,4,5]) ?>
+<?= $form->field($model, 'rating')->dropDownList([
+    1 => 1,
+    2 => 2,
+    3 => 3,
+    4 => 4,
+    5 => 5,
+]) ?>
+
 <?= $form->field($model, 'city_ids')->widget(Select2::class, [
-    'data' => ArrayHelper::map(City::find()->all(), 'id', 'name'),
-    'options' => [
-        'placeholder' => 'Выберите города...',
-        'multiple' => true,
+    'options' => ['placeholder' => 'Выберите города...', 'multiple' => true,
     ],
     'pluginOptions' => [
         'allowClear' => true,
@@ -47,12 +53,13 @@ $this->title = 'Создать отзыв';
 
 <div id="loader" style="display:none;">Сохраняем...</div>
 
-<script>
+<?php
+$js = <<<JS
 $('#save-review').on('click', function () {
     let formData = new FormData($('#review-form')[0]);
-
+    
     $('#loader').show();
-
+    
     $.ajax({
         url: '/review/create-ajax',
         type: 'POST',
@@ -61,15 +68,16 @@ $('#save-review').on('click', function () {
         contentType: false,
         success: function (response) {
             $('#loader').hide();
-
+            
             if (response.success) {
-                alert('Отзыв создан!');
-                window.location.href = '/'
+                window.location.href = '/';
             } else {
-                console.log(response.errors);
                 alert('Ошибка. Проверьте форму.');
             }
         }
     });
 });
-</script>
+JS;
+
+$this->registerJs($js);
+?>
