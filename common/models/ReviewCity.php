@@ -34,8 +34,8 @@ class ReviewCity extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'review_id' => 'Review ID',
-            'city_id' => 'City ID',
+            'review_id' => 'ID отзыва',
+            'city_id' => 'ID города',
         ];
     }
 

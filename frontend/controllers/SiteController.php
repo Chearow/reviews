@@ -70,19 +70,25 @@ class SiteController extends Controller
         }
 
         if (Yii::$app->request->get('forceList')) {
-            $cities = \common\models\City::find()->orderBy(['name' => SORT_ASC])->all();
+            $cities = Yii::$app->db->cache(function () {
+                return \common\models\City::find()
+                    ->orderBy(['name' => SORT_ASC])
+                    ->all();
+            }, 3600);
             return $this->render('choose-city-list', ['cities' => $cities]);
         }
 
         $session = Yii::$app->session;
         if($session->has('city_id')) {
             $cityId = $session->get('city_id');
-            $reviews = \common\models\Review::find()
-                ->joinWith('cities')
-                ->where(['city.id' => $cityId])
-                ->orWhere(['review.is_for_all' => 1])
-                ->orderBy(['review.created_at' => SORT_DESC])
-                ->all();
+            $reviews = Yii::$app->db->cache(function () use ($cityId) {
+                return \common\models\Review::find()
+                    ->joinWith('cities')
+                    ->where(['city.id' => $cityId])
+                    ->orWhere(['review.is_for_all' => 1])
+                    ->orderBy(['review.created_at' => SORT_DESC])
+                    ->all();
+            }, 3600);
             return $this->render('index', ['reviews' => $reviews]);
         }
 
@@ -93,10 +99,12 @@ class SiteController extends Controller
             ]);
         }
 
-        $cities = \common\models\City::find()->orderBy(['name' => SORT_ASC])->all();
-        return $this->render('choose-city-list', [
-            'cities' => $cities,
-        ]);
+        $cities = Yii::$app->db->cache(function () {
+            return \common\models\City::find()
+                ->orderBy(['name' =>SORT_ASC])
+                ->all();
+        }, 3600);
+        return $this->render('choose-city-list', ['cities' => $cities,]);
     }
 
     public function actionSetCity($id)

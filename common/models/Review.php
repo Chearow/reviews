@@ -60,13 +60,13 @@ class Review extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'title' => 'Title',
-            'text' => 'Text',
-            'rating' => 'Rating',
-            'img' => 'Image',
-            'author_id' => 'Author',
+            'title' => 'Заголовок',
+            'text' => 'Отзыв',
+            'rating' => 'Оценка',
+            'img' => 'Изображение',
+            'author_id' => 'Автор',
             'is_for_all' => 'For All Cities',
-            'created_at' => 'Created At',
+            'created_at' => 'Дата создания',
         ];
     }
 

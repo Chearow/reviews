@@ -66,6 +66,7 @@ class User extends ActiveRecord implements IdentityInterface
             'phone' => 'Номер телефона',
             'password' => 'Пароль',
             'is_email_confirmed' => 'Email подтверждён',
+            'created_at' => 'Дата создания'
         ];
     }
 

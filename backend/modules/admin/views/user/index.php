@@ -35,12 +35,12 @@ $this->params['breadcrumbs'][] = $this->title;
             'email:email',
             'created_at',
             //'verification_token',
-            //'fio',
-            //'phone',
+            'fio',
+            'phone',
             //'email_confirm_token:email',
             //'is_email_confirmed:email',
             [
-                'class' => ActionColumn::className(),
+                'class' => ActionColumn::class,
                 'urlCreator' => function ($action, User $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                  }

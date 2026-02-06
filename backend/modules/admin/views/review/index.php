@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'img',
             'author_id',
             //'is_for_all',
-            //'created_at',
+            'created_at',
             [
                 'class' => ActionColumn::class,
                 'urlCreator' => function ($action, Review $model, $key, $index, $column) {
