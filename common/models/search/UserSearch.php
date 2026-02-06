@@ -2,9 +2,9 @@
 
 namespace common\models\search;
 
+use common\models\User;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\User;
 
 /**
  * UserSearch represents the model behind the search form of `common\models\User`.
@@ -18,7 +18,10 @@ class UserSearch extends User
     {
         return [
             [['id', 'created_at', 'is_email_confirmed'], 'integer'],
-            [['auth_key', 'password_hash', 'email', 'verification_token', 'fio', 'phone', 'email_confirm_token'], 'safe'],
+            [
+                ['auth_key', 'password_hash', 'email', 'verification_token', 'fio', 'phone', 'email_confirm_token'],
+                'safe'
+            ],
         ];
     }
 

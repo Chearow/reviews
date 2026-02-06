@@ -10,7 +10,8 @@ use yii\widgets\ActiveForm;
 
 <div class="review-city-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php
+    $form = ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'review_id')->textInput() ?>
 
@@ -20,6 +21,7 @@ use yii\widgets\ActiveForm;
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php
+    ActiveForm::end(); ?>
 
 </div>

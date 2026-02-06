@@ -1,10 +1,8 @@
 <?php
 
+use kartik\select2\Select2;
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
-use kartik\select2\Select2;
-use yii\helpers\ArrayHelper;
-use common\models\City;
 use yii\web\JsExpression;
 
 /** @var $model common\models\Review */
@@ -12,9 +10,10 @@ use yii\web\JsExpression;
 $this->title = 'Редактировать отзыв';
 ?>
 
-<h2><?= Html::encode($this->title) ?></h2>
+    <h2><?= Html::encode($this->title) ?></h2>
 
-<?php $form = ActiveForm::begin([
+<?php
+$form = ActiveForm::begin([
     'options' => ['enctype' => 'multipart/form-data']
 ]); ?>
 
@@ -38,15 +37,17 @@ $this->title = 'Редактировать отзыв';
         'allowClear' => true,
         'minimumInputLength' => 2,
         'language' => [
-            'noResults' => new JsExpression("
+            'noResults' => new JsExpression(
+                "
                 function() {
                     return '<button type=\"button\" class=\"btn btn-link p-0\" id=\"add-city-btn\">Добавить город</button>';
                 }
-            "),
+            "
+            ),
         ],
         'escapeMarkup' => new JsExpression('function (markup) {return markup; }'),
         'ajax' => [
-            'url' =>'/city/search',
+            'url' => '/city/search',
             'dataType' => 'json',
             'delay' => 250,
             'data' => new JsExpression('function(params) { return {q:params.term}; }'),
@@ -56,17 +57,20 @@ $this->title = 'Редактировать отзыв';
 ]) ?>
 
 
-<?php if ($model->review && $model->review->img): ?>
+<?php
+if ($model->review && $model->review->img): ?>
     <div class="mb-3">
         <p>Текущее изображение:</p>
         <img src="<?= $model->review->img ?>" style="max-width:200px" class="img-thumbnail mb-2">
     </div>
-<?php endif; ?>
+<?php
+endif; ?>
 
 <?= $form->field($model, 'imageFile')->fileInput() ?>
 
-<div class="form-group mt-3">
-    <?= Html::submitButton('Сохранить', ['class' => 'btn btn-primary']) ?>
-</div>
+    <div class="form-group mt-3">
+        <?= Html::submitButton('Сохранить', ['class' => 'btn btn-primary']) ?>
+    </div>
 
-<?php ActiveForm::end(); ?>
+<?php
+ActiveForm::end(); ?>

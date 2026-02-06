@@ -9,11 +9,14 @@ $this->title = 'Отзывы вашего города';
 
 <h2 class="mb-4"><?= $this->title ?></h2>
 
-<?php if (empty($reviews)) : ?>
+<?php
+if (empty($reviews)) : ?>
     <p>Пока нет отзывов.</p>
-<?php endif; ?>
+<?php
+endif; ?>
 
-<?php foreach ($reviews as $review) : ?>
+<?php
+foreach ($reviews as $review) : ?>
     <div class="card mb-4 shadow-sm">
         <div class="card-header d-flex justify-content-between">
             <strong><?= htmlspecialchars($review->title) ?></strong>
@@ -23,10 +26,12 @@ $this->title = 'Отзывы вашего города';
         <div class="card-body">
             <p><?= nl2br(htmlspecialchars($review->text)) ?></p>
 
-            <?php if ($review->img): ?>
+            <?php
+            if ($review->img): ?>
                 <img src="<?= $review->img ?>" alt="<?= htmlspecialchars($review->title) ?>"
                      class="img-fluid rounded mb-3" style="max-width: 200px;">
-            <?php endif; ?>
+            <?php
+            endif; ?>
 
             <p>
                 Автор:
@@ -35,7 +40,8 @@ $this->title = 'Отзывы вашего города';
                 </a>
             </p>
 
-            <?php if (!Yii::$app->user->isGuest && $review->author_id === Yii::$app->user->id): ?>
+            <?php
+            if (!Yii::$app->user->isGuest && $review->author_id === Yii::$app->user->id): ?>
                 <div class="mb-3">
                     <a href="<?= Url::to(['review/update', 'id' => $review->id]) ?>"
                        class="btn btn-warning btn-sm">Редактировать</a>
@@ -44,17 +50,19 @@ $this->title = 'Отзывы вашего города';
                        class="btn btn-danger btn-sm"
                        data-confirm="Удалить отзыв?"
                        data-method="post">
-                       Удалить
+                        Удалить
                     </a>
                 </div>
-            <?php endif; ?>
+            <?php
+            endif; ?>
 
             <p class="text-muted small mb-0">
                 <?= date('d.m.Y H:i', $review->created_at) ?>
             </p>
         </div>
     </div>
-<?php endforeach; ?>
+<?php
+endforeach; ?>
 
 <?php
 $authorInfoUrl = Url::to(['/site/author-info']);

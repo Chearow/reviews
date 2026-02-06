@@ -10,7 +10,8 @@ use yii\widgets\ActiveForm;
 
 <div class="user-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php
+    $form = ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
 
@@ -26,6 +27,7 @@ use yii\widgets\ActiveForm;
         <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php
+    ActiveForm::end(); ?>
 
 </div>

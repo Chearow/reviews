@@ -25,6 +25,7 @@ class Review extends \yii\db\ActiveRecord
 {
     public $imageFile;
     public $city_ids = [];
+
     public static function tableName()
     {
         return 'review';
@@ -50,7 +51,13 @@ class Review extends \yii\db\ActiveRecord
             ['is_for_all', 'boolean'],
             [['title'], 'string', 'max' => 100],
             [['text', 'img'], 'string', 'max' => 255],
-            [['author_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['author_id' => 'id']],
+            [
+                ['author_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => User::class,
+                'targetAttribute' => ['author_id' => 'id']
+            ],
             ['city_ids', 'each', 'rule' => ['integer']],
             ['imageFile', 'file', 'extensions' => 'png, jpg, jpeg', 'skipOnEmpty' => true],
         ];
@@ -114,7 +121,7 @@ class Review extends \yii\db\ActiveRecord
 
         ReviewCity::deleteAll(['review_id' => $this->id]);
 
-        if(is_array($this->city_ids)) {
+        if (is_array($this->city_ids)) {
             foreach ($this->city_ids as $city_id) {
                 $rc = new ReviewCity();
                 $rc->review_id = $this->id;

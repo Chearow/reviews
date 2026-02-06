@@ -1,11 +1,9 @@
 <?php
 
 use frontend\models\ReviewForm;
+use kartik\select2\Select2;
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
-use kartik\select2\Select2;
-use yii\helpers\ArrayHelper;
-use common\models\City;
 use yii\web\JsExpression;
 
 /** @var $model ReviewForm */
@@ -15,11 +13,12 @@ $this->title = 'Создать отзыв';
 
 <h2><?= $this->title ?></h2>
 
-<?php $form = ActiveForm::begin([
-        'id' => 'review-form',
-        'enableClientValidation' => false,
-        'enableAjaxValidation' => false,
-        'options' => ['enctype' => 'multipart/form-data'],
+<?php
+$form = ActiveForm::begin([
+    'id' => 'review-form',
+    'enableClientValidation' => false,
+    'enableAjaxValidation' => false,
+    'options' => ['enctype' => 'multipart/form-data'],
 ]); ?>
 
 <?= $form->field($model, 'title') ?>
@@ -42,15 +41,17 @@ $this->title = 'Создать отзыв';
         'allowClear' => true,
         'minimumInputLength' => 2,
         'language' => [
-            'noResults' => new JsExpression("
+            'noResults' => new JsExpression(
+                "
                 function() {
                     return '<button type=\"button\" class=\"btn btn-link p-0\" id=\"add-city-btn\">Добавить город</button>';
                 }
-            "),
+            "
+            ),
         ],
         'escapeMarkup' => new JsExpression('function (markup) {return markup; }'),
         'ajax' => [
-            'url' =>'/city/search',
+            'url' => '/city/search',
             'dataType' => 'json',
             'delay' => 250,
             'data' => new JsExpression('function(params) { return {q:params.term}; }'),
@@ -64,7 +65,8 @@ $this->title = 'Создать отзыв';
     <?= Html::button('Сохранить', ['class' => 'btn btn-primary', 'id' => 'save-review']) ?>
 </div>
 
-<?php ActiveForm::end(); ?>
+<?php
+ActiveForm::end(); ?>
 
 <div id="loader" style="
     display:none;

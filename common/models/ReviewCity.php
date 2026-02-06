@@ -2,8 +2,6 @@
 
 namespace common\models;
 
-use Yii;
-
 /**
  * This is the model class for table "review_city".
  *
@@ -26,8 +24,20 @@ class ReviewCity extends \yii\db\ActiveRecord
             [['review_id', 'city_id'], 'required'],
             [['review_id', 'city_id'], 'integer'],
             [['review_id', 'city_id'], 'unique', 'targetAttribute' => ['review_id', 'city_id']],
-            [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => City::class, 'targetAttribute' => ['city_id' => 'id']],
-            [['review_id'], 'exist', 'skipOnError' => true, 'targetClass' => Review::class, 'targetAttribute' => ['review_id' => 'id']],
+            [
+                ['city_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => City::class,
+                'targetAttribute' => ['city_id' => 'id']
+            ],
+            [
+                ['review_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => Review::class,
+                'targetAttribute' => ['review_id' => 'id']
+            ],
         ];
     }
 

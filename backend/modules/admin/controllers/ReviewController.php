@@ -2,14 +2,14 @@
 
 namespace backend\modules\admin\controllers;
 
-use Yii;
 use common\models\Review;
 use common\models\search\ReviewSearch;
+use Yii;
+use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
-use yii\helpers\ArrayHelper;
 
 class ReviewController extends Controller
 {
@@ -46,6 +46,15 @@ class ReviewController extends Controller
         ]);
     }
 
+    protected function findModel($id)
+    {
+        if (($model = Review::findOne(['id' => $id])) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
     public function actionCreate()
     {
         $model = new Review();
@@ -53,7 +62,7 @@ class ReviewController extends Controller
         if ($model->load($this->request->post())) {
             $model->city_ids = $this->request->post('Review')['city_ids'] ?? [];
             $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
-            if($model->validate()) {
+            if ($model->validate()) {
                 if ($model->uploadImage()) {
                     if ($model->save(false)) {
                         Yii::$app->cache->flush();
@@ -75,7 +84,7 @@ class ReviewController extends Controller
             $model->city_ids = $this->request->post('Review')['city_ids'] ?? [];
             $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
 
-            if($model->validate()) {
+            if ($model->validate()) {
                 if ($model->uploadImage()) {
                     if ($model->save(false)) {
                         Yii::$app->cache->flush();
@@ -93,14 +102,5 @@ class ReviewController extends Controller
         $this->findModel($id)->delete();
         Yii::$app->cache->flush();
         return $this->redirect(['index']);
-    }
-
-    protected function findModel($id)
-    {
-        if (($model = Review::findOne(['id' => $id])) !== null) {
-            return $model;
-        }
-
-        throw new NotFoundHttpException('The requested page does not exist.');
     }
 }

@@ -4,9 +4,9 @@ namespace backend\modules\admin\controllers;
 
 use common\models\City;
 use common\models\search\CitySearch;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * CityController implements the CRUD actions for City model.
@@ -46,6 +46,15 @@ class CityController extends Controller
         ]);
     }
 
+    protected function findModel($id)
+    {
+        if (($model = City::findOne(['id' => $id])) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
     public function actionCreate()
     {
         $model = new City();
@@ -81,14 +90,5 @@ class CityController extends Controller
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
-    }
-
-    protected function findModel($id)
-    {
-        if (($model = City::findOne(['id' => $id])) !== null) {
-            return $model;
-        }
-
-        throw new NotFoundHttpException('The requested page does not exist.');
     }
 }

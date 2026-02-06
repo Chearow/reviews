@@ -10,7 +10,8 @@ use yii\widgets\ActiveForm;
 
 <div class="review-form">
 
-    <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
+    <?php
+    $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 
@@ -36,6 +37,7 @@ use yii\widgets\ActiveForm;
         <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php
+    ActiveForm::end(); ?>
 
 </div>

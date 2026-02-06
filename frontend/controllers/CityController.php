@@ -2,10 +2,10 @@
 
 namespace frontend\controllers;
 
+use common\models\City;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
-use common\models\City;
 
 class CityController extends Controller
 {
@@ -37,7 +37,7 @@ class CityController extends Controller
         Yii::$app->response->format = Response::FORMAT_JSON;
 
         $query = Yii::$app->request->post('query');
-        if(!$query) {
+        if (!$query) {
             return ['success' => false, 'message' => 'Пустой запрос'];
         }
 

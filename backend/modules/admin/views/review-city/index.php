@@ -1,10 +1,10 @@
 <?php
 
 use common\models\ReviewCity;
-use yii\helpers\Html;
-use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
+use yii\helpers\Html;
+use yii\helpers\Url;
 
 /** @var yii\web\View $this */
 /** @var common\models\search\ReviewCitySearch $searchModel */
@@ -21,7 +21,8 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Create Review City', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?php
+    // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -35,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => ActionColumn::class,
                 'urlCreator' => function ($action, ReviewCity $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'review_id' => $model->review_id, 'city_id' => $model->city_id]);
-                 }
+                }
             ],
         ],
     ]); ?>

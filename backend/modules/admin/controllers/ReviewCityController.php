@@ -4,9 +4,9 @@ namespace backend\modules\admin\controllers;
 
 use common\models\ReviewCity;
 use common\models\search\ReviewCitySearch;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * ReviewCityController implements the CRUD actions for ReviewCity model.
@@ -46,6 +46,15 @@ class ReviewCityController extends Controller
         ]);
     }
 
+    protected function findModel($review_id, $city_id)
+    {
+        if (($model = ReviewCity::findOne(['review_id' => $review_id, 'city_id' => $city_id])) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
     public function actionCreate()
     {
         $model = new ReviewCity();
@@ -81,14 +90,5 @@ class ReviewCityController extends Controller
         $this->findModel($review_id, $city_id)->delete();
 
         return $this->redirect(['index']);
-    }
-
-    protected function findModel($review_id, $city_id)
-    {
-        if (($model = ReviewCity::findOne(['review_id' => $review_id, 'city_id' => $city_id])) !== null) {
-            return $model;
-        }
-
-        throw new NotFoundHttpException('The requested page does not exist.');
     }
 }

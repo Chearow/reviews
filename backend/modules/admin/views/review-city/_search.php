@@ -10,7 +10,8 @@ use yii\widgets\ActiveForm;
 
 <div class="review-city-search">
 
-    <?php $form = ActiveForm::begin([
+    <?php
+    $form = ActiveForm::begin([
         'action' => ['index'],
         'method' => 'get',
     ]); ?>
@@ -24,6 +25,7 @@ use yii\widgets\ActiveForm;
         <?= Html::resetButton('Reset', ['class' => 'btn btn-outline-secondary']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php
+    ActiveForm::end(); ?>
 
 </div>

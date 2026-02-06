@@ -3,13 +3,13 @@
 namespace frontend\controllers;
 
 use common\models\Review;
+use frontend\models\ReviewForm;
 use Yii;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
-use yii\filters\AccessControl;
-use frontend\models\ReviewForm;
 
 class ReviewController extends Controller
 {
@@ -18,7 +18,7 @@ class ReviewController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' =>['create', 'create-ajax'],
+                'only' => ['create', 'create-ajax'],
                 'rules' => [
                     [
                         'allow' => true,
@@ -42,7 +42,7 @@ class ReviewController extends Controller
         if (!$model) {
             throw new NotFoundHttpException('Отзыв не найден');
         }
-        if($model->author_id !== Yii::$app->user->id) {
+        if ($model->author_id !== Yii::$app->user->id) {
             throw new ForbiddenHttpException('Вы не можете редактировать этот отзыв');
         }
 
@@ -62,7 +62,7 @@ class ReviewController extends Controller
         if (!$model) {
             throw new NotFoundHttpException('отзыв не найден');
         }
-        if($model->author_id !== Yii::$app->user->id) {
+        if ($model->author_id !== Yii::$app->user->id) {
             throw new ForbiddenHttpException('Вы не можете удалить этот отзыв');
         }
 

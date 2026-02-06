@@ -1,5 +1,6 @@
 <?php
 /** @var User $user */
+
 /** @var Review[] $reviews */
 
 use common\models\Review;
@@ -10,11 +11,14 @@ $this->title = 'Отзывы автора: ' . $user->fio;
 
 <h2 class="mb-4"><?= htmlspecialchars($this->title) ?></h2>
 
-<?php if (empty($reviews)) : ?>
+<?php
+if (empty($reviews)) : ?>
     <p>У этого автора пока нет отзывов.</p>
-<?php endif; ?>
+<?php
+endif; ?>
 
-<?php foreach ($reviews as $review) : ?>
+<?php
+foreach ($reviews as $review) : ?>
     <div class="card mb-4 shadow-sm">
         <div class="card-header d-flex justify-content-between">
             <strong><?= htmlspecialchars($review->title) ?></strong>
@@ -24,17 +28,21 @@ $this->title = 'Отзывы автора: ' . $user->fio;
         <div class="card-body">
             <p><?= nl2br(htmlspecialchars($review->text)) ?></p>
 
-            <?php if (!empty($review->img)) : ?>
+            <?php
+            if (!empty($review->img)) : ?>
                 <img src="<?= $review->img ?>" alt="<?= htmlspecialchars($review->title) ?>"
                      class="img-fluid rounded mb-3" style="max-width: 200px;">
-            <?php endif; ?>
+            <?php
+            endif; ?>
 
             <p><strong>Города:</strong>
-                <?php foreach ($review->cities as $city) : ?>
+                <?php
+                foreach ($review->cities as $city) : ?>
                     <span class="badge bg-info text-dark me-1">
                         <?= htmlspecialchars($city->name) ?>
                     </span>
-                <?php endforeach; ?>
+                <?php
+                endforeach; ?>
             </p>
 
             <p class="text-muted small mb-0">
@@ -42,4 +50,5 @@ $this->title = 'Отзывы автора: ' . $user->fio;
             </p>
         </div>
     </div>
-<?php endforeach; ?>
+<?php
+endforeach; ?>

@@ -2,11 +2,11 @@
 
 namespace backend\modules\admin\controllers;
 
-use common\models\User;
 use common\models\search\UserSearch;
+use common\models\User;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * UserController implements the CRUD actions for User model.
@@ -46,6 +46,15 @@ class UserController extends Controller
         ]);
     }
 
+    protected function findModel($id)
+    {
+        if (($model = User::findOne(['id' => $id])) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
     public function actionCreate()
     {
         $model = new User();
@@ -82,14 +91,5 @@ class UserController extends Controller
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
-    }
-
-    protected function findModel($id)
-    {
-        if (($model = User::findOne(['id' => $id])) !== null) {
-            return $model;
-        }
-
-        throw new NotFoundHttpException('The requested page does not exist.');
     }
 }

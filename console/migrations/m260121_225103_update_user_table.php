@@ -16,6 +16,7 @@ class m260121_225103_update_user_table extends Migration
         $this->addColumn('{{%user}}', 'email_confirm_token', $this->string()->defaultValue(null));
         $this->addColumn('{{%user}}', 'is_email_confirmed', $this->boolean()->defaultValue(false));
     }
+
     public function safeDown()
     {
         $this->addColumn('{{%user}}', 'username', $this->string()->notNull()->unique());
