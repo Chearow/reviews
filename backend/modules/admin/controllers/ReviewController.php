@@ -2,6 +2,7 @@
 
 namespace backend\modules\admin\controllers;
 
+use Yii;
 use common\models\Review;
 use common\models\search\ReviewSearch;
 use yii\web\Controller;
@@ -55,6 +56,7 @@ class ReviewController extends Controller
             if($model->validate()) {
                 if ($model->uploadImage()) {
                     if ($model->save(false)) {
+                        Yii::$app->cache->flush();
                         return $this->redirect(['view', 'id' => $model->id]);
                     }
                 }
@@ -76,6 +78,7 @@ class ReviewController extends Controller
             if($model->validate()) {
                 if ($model->uploadImage()) {
                     if ($model->save(false)) {
+                        Yii::$app->cache->flush();
                         return $this->redirect(['view', 'id' => $model->id]);
                     }
                 }
@@ -88,6 +91,7 @@ class ReviewController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
+        Yii::$app->cache->flush();
         return $this->redirect(['index']);
     }
 

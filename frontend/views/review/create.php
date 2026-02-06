@@ -1,12 +1,14 @@
 <?php
 
+use frontend\models\ReviewForm;
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 use kartik\select2\Select2;
 use yii\helpers\ArrayHelper;
 use common\models\City;
+use yii\web\JsExpression;
 
-/** @var $model \frontend\models\ReviewForm */
+/** @var $model ReviewForm */
 
 $this->title = 'Создать отзыв';
 ?>
@@ -40,19 +42,19 @@ $this->title = 'Создать отзыв';
         'allowClear' => true,
         'minimumInputLength' => 2,
         'language' => [
-            'noResults' => new \yii\web\JsExpression("
+            'noResults' => new JsExpression("
                 function() {
                     return '<button type=\"button\" class=\"btn btn-link p-0\" id=\"add-city-btn\">Добавить город</button>';
                 }
             "),
         ],
-        'escapeMarkup' => new \yii\web\JsExpression('function (markup) {return markup; }'),
+        'escapeMarkup' => new JsExpression('function (markup) {return markup; }'),
         'ajax' => [
             'url' =>'/city/search',
             'dataType' => 'json',
             'delay' => 250,
-            'data' => new \yii\web\JsExpression('function(params) { return {q:params.term}; }'),
-            'processResults' => new \yii\web\JsExpression('function(data) {return {results: data};}')
+            'data' => new JsExpression('function(params) { return {q:params.term}; }'),
+            'processResults' => new JsExpression('function(data) {return {results: data};}')
         ],
     ],
 ]) ?>
@@ -64,7 +66,20 @@ $this->title = 'Создать отзыв';
 
 <?php ActiveForm::end(); ?>
 
-<div id="loader" style="display:none;">Сохраняем...</div>
+<div id="loader" style="
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(255,255,255,0.7);
+    z-index:9999;
+    text-align:center;
+    padding-top:200px;
+">
+    <img src="/images/loader.gif" alt="loading"
+</div>
 
 <?php
 $js = <<<JS

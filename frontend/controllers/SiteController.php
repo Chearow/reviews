@@ -2,10 +2,15 @@
 
 namespace frontend\controllers;
 
+use common\models\City;
+use common\models\Review;
+use common\models\User;
 use frontend\models\ResendVerificationEmailForm;
 use frontend\models\VerifyEmailForm;
 use Yii;
 use yii\base\InvalidArgumentException;
+use yii\captcha\CaptchaAction;
+use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
@@ -15,6 +20,9 @@ use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
+use yii\web\ErrorAction;
+use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 /**
  * Site controller
@@ -54,10 +62,10 @@ class SiteController extends Controller
     {
         return [
             'error' => [
-                'class' => \yii\web\ErrorAction::class,
+                'class' => ErrorAction::class,
             ],
             'captcha' => [
-                'class' => \yii\captcha\CaptchaAction::class,
+                'class' => CaptchaAction::class,
                 'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
             ],
         ];
@@ -71,7 +79,7 @@ class SiteController extends Controller
 
         if (Yii::$app->request->get('forceList')) {
             $cities = Yii::$app->db->cache(function () {
-                return \common\models\City::find()
+                return City::find()
                     ->orderBy(['name' => SORT_ASC])
                     ->all();
             }, 3600);
@@ -81,14 +89,12 @@ class SiteController extends Controller
         $session = Yii::$app->session;
         if($session->has('city_id')) {
             $cityId = $session->get('city_id');
-            $reviews = Yii::$app->db->cache(function () use ($cityId) {
-                return \common\models\Review::find()
-                    ->joinWith('cities')
-                    ->where(['city.id' => $cityId])
-                    ->orWhere(['review.is_for_all' => 1])
-                    ->orderBy(['review.created_at' => SORT_DESC])
-                    ->all();
-            }, 3600);
+            $reviews = Review::find()
+                ->joinWith('cities')
+                ->where(['city.id' => $cityId])
+                ->orWhere(['review.is_for_all' => 1])
+                ->orderBy(['review.created_at' => SORT_DESC])
+                ->all();
             return $this->render('index', ['reviews' => $reviews]);
         }
 
@@ -100,7 +106,7 @@ class SiteController extends Controller
         }
 
         $cities = Yii::$app->db->cache(function () {
-            return \common\models\City::find()
+            return City::find()
                 ->orderBy(['name' =>SORT_ASC])
                 ->all();
         }, 3600);
@@ -109,13 +115,13 @@ class SiteController extends Controller
 
     public function actionSetCity($id)
     {
-        $city = \common\models\City::findOne($id);
+        $city = City::findOne($id);
         if ($city) {
             Yii::$app->session->set('city_id', $city->id);
             return $this->redirect(['site/index']);
         }
 
-        throw new \yii\web\NotFoundHttpException('Город не найден');
+        throw new NotFoundHttpException('Город не найден');
     }
 
     public function actionLogin()
@@ -272,12 +278,12 @@ class SiteController extends Controller
             return null;
         }
 
-        $city = \common\models\City::findOne(['name' => $cityName]);
+        $city = City::findOne(['name' => $cityName]);
         if ($city) {
             return $city;
         }
 
-        $city = new \common\models\City();
+        $city = new City();
         $city->name = $cityName;
         $city->created_at = time();
         $city->save(false);
@@ -287,8 +293,8 @@ class SiteController extends Controller
 
     public function actionAuthorInfo($id)
     {
-        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-        $user = \common\models\User::findOne($id);
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $user = User::findOne($id);
         if (!$user) {
             return [
                 'success' => false,
@@ -302,19 +308,19 @@ class SiteController extends Controller
                 'fio' => $user->fio,
                 'email' => $user->email,
                 'phone' => $user->phone,
-                'reviewsUrl' => \yii\helpers\Url::to(['site/author-reviews', 'id' => $user->id]),
+                'reviewsUrl' => Url::to(['author-reviews', 'id' => $user->id]),
             ],
         ];
     }
 
     public function actionAuthorReviews($id)
     {
-        $user = \common\models\User::findOne($id);
+        $user = User::findOne($id);
         if (!$user) {
-            throw new \yii\web\NotFoundHttpException('Автор не найден');
+            throw new NotFoundHttpException('Автор не найден');
         }
 
-        $reviews = \common\models\Review::find()
+        $reviews = Review::find()
             ->where(['author_id' => $id])
             ->orderBy(['created_at' => SORT_DESC])
             ->all();

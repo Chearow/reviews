@@ -1,5 +1,9 @@
 <?php
-/** @var \common\models\City[] $cities */
+/** @var City[] $cities */
+
+use common\models\City;
+use yii\helpers\Url;
+
 ?>
 
 
@@ -7,7 +11,7 @@
 <ul>
     <?php foreach ($cities as $city): ?>
         <li>
-            <a href="<?= \yii\helpers\Url::to(['site/set-city', 'id' => $city->id]) ?>">
+            <a href="<?= Url::to(['site/set-city', 'id' => $city->id]) ?>">
                 <?= $city->name ?>
             </a>
         </li>

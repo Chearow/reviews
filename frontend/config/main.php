@@ -46,6 +46,7 @@ return [
                 '<action:(about|contact|login|signup)>' => 'site/<action>',
                 '<controller:\w+>/<id:\d+>' => '<controller>/view',
                 '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
+                '<author:/<id:\d+>' => 'site/author-reviews',
             ],
         ],
     ],

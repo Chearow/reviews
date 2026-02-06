@@ -40,6 +40,7 @@ class ReviewController extends Controller
         $model = new ReviewForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Yii::$app->cache->flush();
             return ['success' => true];
         }
 

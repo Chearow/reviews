@@ -36,10 +36,10 @@ AppAsset::register($this);
         ],
     ]);
     $menuItemsLeft = [
-        ['label' => 'Home', 'url' => ['/']],
-        ['label' => 'Users', 'url' => ['/admin/user/index']],
-        ['label' => 'Cities', 'url' => ['/admin/city/index']],
-        ['label' => 'Reviews', 'url' => ['/admin/review/index']],
+        ['label' => 'Главная', 'url' => ['/']],
+        ['label' => 'Пользователи', 'url' => ['/admin/user/index']],
+        ['label' => 'Города', 'url' => ['/admin/city/index']],
+        ['label' => 'Отзывы', 'url' => ['/admin/review/index']],
     ];
 
     echo Nav::widget([
@@ -49,7 +49,7 @@ AppAsset::register($this);
 
     if (Yii::$app->user->isGuest) {
         $menuItemsRight = [
-                ['label' => 'Login', 'url' => ['/site/login']],
+                ['label' => 'Авторизоваться', 'url' => ['/site/login']],
         ];
     }  else {
         $menuItemsRight = [

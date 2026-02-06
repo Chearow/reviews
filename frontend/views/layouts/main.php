@@ -39,6 +39,10 @@ AppAsset::register($this);
         ['label' => 'About', 'url' => ['/about']],
         ['label' => 'Contact', 'url' => ['/contact']],
     ];
+
+    if (!Yii::$app->user->isGuest) {
+        $menuItems[] = ['label' => 'Создать отзыв', 'url' =>['/review/create']];
+    }
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Signup', 'url' => ['/signup']];
     }
