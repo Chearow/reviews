@@ -5,6 +5,7 @@ namespace frontend\models;
 use Yii;
 use yii\base\Model;
 use common\models\Review;
+use yii\web\UploadedFile;
 
 class ReviewForm extends Model
 {
@@ -14,6 +15,8 @@ class ReviewForm extends Model
     public $city_ids = [];
     public $imageFile;
 
+    /** @var Review */
+    public $review;
     public function rules()
     {
         return [
@@ -37,13 +40,22 @@ class ReviewForm extends Model
         ];
     }
 
+    public function loadFromReview(Review $review)
+    {
+        $this->review = $review;
+        $this->title = $review->title;
+        $this->text = $review->text;
+        $this->rating = $review->rating;
+        $this->city_ids = $review->city_ids;
+    }
+
     public function save()
     {
         if (!$this->validate()) {
             return false;
         }
 
-        $this->imageFile = \yii\web\UploadedFile::getInstance($this, 'imageFile');
+        $this->imageFile = UploadedFile::getInstance($this, 'imageFile');
 
         $review = new Review();
         $review->title = $this->title;
@@ -59,6 +71,34 @@ class ReviewForm extends Model
         }
 
         $review->uploadImage();
+        return true;
+    }
+
+    public function update()
+    {
+        if (!$this->validate()) {
+            return false;
+        }
+
+        $review = $this->review;
+        $oldImage = $review->img;
+        $review->title = $this->title;
+        $review->text = $this->text;
+        $review->rating = $this->rating;
+        $review->city_ids = $this->city_ids;
+        $review->is_for_all = empty($this->city_ids) ? 1 : 0;
+        $this->imageFile = UploadedFile::getInstance($this, 'imageFile');
+        $review->imageFile = $this->imageFile;
+
+        if (!$review->save()) {
+            return false;
+        }
+
+        $review->uploadImage();
+
+        if ($this->imageFile && $oldImage !== $review->img) {
+            @unlink(Yii::getAlias('@frontend/web/' . $oldImage));
+        }
         return true;
     }
 }

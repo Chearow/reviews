@@ -123,4 +123,15 @@ class Review extends \yii\db\ActiveRecord
             }
         }
     }
+
+    public function beforeDelete()
+    {
+        if (!parent::beforeDelete()) {
+            return false;
+        }
+        if ($this->img) {
+            @unlink(Yii::getAlias('@frontend/web') . $this->img);
+        }
+        return true;
+    }
 }

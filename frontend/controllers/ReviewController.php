@@ -2,8 +2,11 @@
 
 namespace frontend\controllers;
 
+use common\models\Review;
 use Yii;
 use yii\web\Controller;
+use yii\web\ForbiddenHttpException;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\filters\AccessControl;
 use frontend\models\ReviewForm;
@@ -31,6 +34,45 @@ class ReviewController extends Controller
         $model = new ReviewForm();
 
         return $this->render('create', ['model' => $model]);
+    }
+
+    public function actionUpdate($id)
+    {
+        $model = Review::findone($id);
+        if (!$model) {
+            throw new NotFoundHttpException('Отзыв не найден');
+        }
+        if($model->author_id !== Yii::$app->user->id) {
+            throw new ForbiddenHttpException('Вы не можете редактировать этот отзыв');
+        }
+
+        $form = new ReviewForm();
+        $form->loadFromReview($model);
+
+        if ($form->load(Yii::$app->request->post()) && $form->update()) {
+            Yii::$app->session->setFlash('success', 'Отзыв обновлён');
+            return $this->redirect(['site/index']);
+        }
+        return $this->render('update', ['model' => $form]);
+    }
+
+    public function actionDelete($id)
+    {
+        $model = Review::findone($id);
+        if (!$model) {
+            throw new NotFoundHttpException('отзыв не найден');
+        }
+        if($model->author_id !== Yii::$app->user->id) {
+            throw new ForbiddenHttpException('Вы не можете удалить этот отзыв');
+        }
+
+        if ($model->img) {
+            @unlink(Yii::getAlias('@frontend/web/' . $model->img));
+        }
+        $model->delete();
+
+        Yii::$app->session->setFlash('success', 'Отзыв удалён');
+        return $this->redirect(['site/index']);
     }
 
     public function actionCreateAjax()

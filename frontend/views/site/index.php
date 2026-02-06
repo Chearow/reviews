@@ -35,6 +35,20 @@ $this->title = 'Отзывы вашего города';
                 </a>
             </p>
 
+            <?php if (!Yii::$app->user->isGuest && $review->author_id === Yii::$app->user->id): ?>
+                <div class="mb-3">
+                    <a href="<?= Url::to(['review/update', 'id' => $review->id]) ?>"
+                       class="btn btn-warning btn-sm">Редактировать</a>
+
+                    <a href="<?= Url::to(['review/delete', 'id' => $review->id]) ?>"
+                       class="btn btn-danger btn-sm"
+                       data-confirm="Удалить отзыв?"
+                       data-method="post">
+                       Удалить
+                    </a>
+                </div>
+            <?php endif; ?>
+
             <p class="text-muted small mb-0">
                 <?= date('d.m.Y H:i', $review->created_at) ?>
             </p>
