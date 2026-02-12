@@ -6,21 +6,29 @@ use common\models\City;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
+use frontend\services\ApiService;
+use frontend\repositories\CityRepository;
 
 class CityController extends Controller
 {
-    public function actionSearch($q = null)
+    public ApiService $apiService;
+    public CityRepository $cityRepository;
+    public function __construct($id, $module, ApiService $apiService,CityRepository $cityRepository, $config = [])
+    {
+        $this->apiService = $apiService;
+        $this->cityRepository = $cityRepository;
+        parent::__construct($id, $module, $config);
+    }
+    public function actionSearch($cityQuery = null)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
 
-        if (!$q) {
+        if (!$cityQuery) {
             return [];
         }
 
-        $cities = City::find()
-            ->where(['like', 'name', $q])
-            ->limit(20)
-            ->all();
+        $cities = $this->cityRepository->searchByname($cityQuery);
+
         $results = [];
 
         foreach ($cities as $city) {
@@ -41,38 +49,14 @@ class CityController extends Controller
             return ['success' => false, 'message' => 'Пустой запрос'];
         }
 
-        $apiKey = Yii::$app->params['dadataApiKey'];
+        $cityName = $this->apiService->suggestCity($query);
 
-        $ch = curl_init('https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/address');
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            "Content-Type: application/json",
-            "Accept: application/json",
-            "Authorization: Token $apiKey",
-        ]);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
-            'query' => $query,
-            'from_bound' => ['value' => 'city'],
-            'to_bound' => ['value' => 'city'],
-        ]));
-
-        $result = curl_exec($ch);
-        curl_close($ch);
-
-        $data = json_decode($result, true);
-
-        if (empty($data['suggestions'])) {
+        if (!$cityName) {
             return ['success' => false, 'message' => 'Город не найден в Dadata'];
         }
 
-        $cityName = $data['suggestions'][0]['data']['city'] ?? null;
+        $existing = $this->cityRepository->findByName($cityName);
 
-        if (!$cityName) {
-            return ['success' => false, 'message' => 'Некорректный ответ Dadata'];
-        }
-
-        $existing = City::findOne(['name' => $cityName]);
         if ($existing) {
             return [
                 'success' => true,
@@ -81,10 +65,7 @@ class CityController extends Controller
             ];
         }
 
-        $city = new City();
-        $city->name = $cityName;
-        $city->created_at = time();
-        $city->save(false);
+        $city = $this->cityRepository->create($cityName);
 
         return [
             'success' => true,

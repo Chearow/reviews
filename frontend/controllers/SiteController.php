@@ -23,6 +23,8 @@ use yii\web\Controller;
 use yii\web\ErrorAction;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
+use frontend\services\ApiService;
+use frontend\repositories\CityRepository;
 
 /**
  * Site controller
@@ -113,41 +115,21 @@ class SiteController extends Controller
         return $this->render('choose-city-list', ['cities' => $cities,]);
     }
 
-    private function detectCityByIP()
+    private function detectCityByIP(): ?City
     {
         $ip = Yii::$app->request->userIP;
         if ($ip === '127.0.0.1' || $ip === '::1') {
             return null;
         }
 
-        $url = "http://ip-api.com/json/{$ip}?lang=ru";
-
-        $response = @file_get_contents($url);
-        if (!$response) {
-            return null;
-        }
-
-        $data = json_decode($response, true);
-        if (!isset($data['status']) || $data['status'] !== 'success') {
-            return null;
-        }
-
-        $cityName = $data['city'] ?? null;
+        $cityName = $this->apiService->detectCityNameByIP($ip);
         if (!$cityName) {
             return null;
         }
 
-        $city = City::findOne(['name' => $cityName]);
-        if ($city) {
-            return $city;
-        }
+        return $this->cityRepository->findByName($cityName)
+            ?? $this->cityRepository->create($cityName);
 
-        $city = new City();
-        $city->name = $cityName;
-        $city->created_at = time();
-        $city->save(false);
-
-        return $city;
     }
 
     public function actionSetCity($id)

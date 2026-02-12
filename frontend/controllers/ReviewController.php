@@ -60,7 +60,7 @@ class ReviewController extends Controller
     {
         $model = Review::findone($id);
         if (!$model) {
-            throw new NotFoundHttpException('отзыв не найден');
+            throw new NotFoundHttpException('Отзыв не найден');
         }
         if ($model->author_id !== Yii::$app->user->id) {
             throw new ForbiddenHttpException('Вы не можете удалить этот отзыв');
