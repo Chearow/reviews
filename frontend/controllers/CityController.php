@@ -2,23 +2,24 @@
 
 namespace frontend\controllers;
 
-use common\models\City;
+use frontend\repositories\CityRepository;
+use frontend\services\ApiService;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
-use frontend\services\ApiService;
-use frontend\repositories\CityRepository;
 
 class CityController extends Controller
 {
     public ApiService $apiService;
     public CityRepository $cityRepository;
-    public function __construct($id, $module, ApiService $apiService,CityRepository $cityRepository, $config = [])
+
+    public function __construct($id, $module, ApiService $apiService, CityRepository $cityRepository, $config = [])
     {
         $this->apiService = $apiService;
         $this->cityRepository = $cityRepository;
         parent::__construct($id, $module, $config);
     }
+
     public function actionSearch($cityQuery = null)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;

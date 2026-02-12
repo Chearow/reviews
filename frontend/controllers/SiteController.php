@@ -23,8 +23,6 @@ use yii\web\Controller;
 use yii\web\ErrorAction;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
-use frontend\services\ApiService;
-use frontend\repositories\CityRepository;
 
 /**
  * Site controller
@@ -129,7 +127,6 @@ class SiteController extends Controller
 
         return $this->cityRepository->findByName($cityName)
             ?? $this->cityRepository->create($cityName);
-
     }
 
     public function actionSetCity($id)

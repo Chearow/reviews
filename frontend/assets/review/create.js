@@ -1,7 +1,7 @@
-$(document).on('click', '#add-city-btn', function() {
+$(document).on('click', '#add-city-btn', function () {
     let query = $('.select2-search__field').val();
 
-    if(!query) {
+    if (!query) {
         alert('Введите название города');
         return;
     }
@@ -10,7 +10,7 @@ $(document).on('click', '#add-city-btn', function() {
         url: '/city/create-ajax',
         type: 'POST',
         data: {query: query},
-        success: function(response) {
+        success: function (response) {
             if (response.success) {
                 let newOption = new Option(response.text, response.id, true, true);
                 $('.select2-search__field').val('');
