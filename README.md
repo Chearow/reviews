@@ -46,22 +46,23 @@
 ### Города
 - `id`
 - `name`
-- `date_create`
+- `created_at`
 
 ### Отзывы
 - `id`
-- `id_city`
+- `review_id`
+- `city_id`
 - `title`
 - `text`
 - `rating`
 - `img`
-- `id_autor`
-- `date_create`
+- `author_id`
+- `created_at`
 
 ### Пользователи
-- `id`
+- `username`
 - `fio`
 - `email`
 - `phone`
 - `password`
-- `date_create`
+- `created_at`
