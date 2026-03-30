@@ -34,10 +34,10 @@
 - **Yii2 Advanced**
 - **PHP 8.4**
 - **MySQL 8.4**
-- **Bootstrap 5** (верстка)
+- **Bootstrap 5**
 - **Composer**
-- **PhpStorm** (разработка)
-- **PSR-12** (кодстайл)
+- **PhpStorm**
+- **PSR-12**
 
 ---
 
